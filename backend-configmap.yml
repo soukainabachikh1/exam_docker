@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-conf 
+  namespace: exam
+data:
+  server-uri: 10.109.144.172

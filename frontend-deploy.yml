@@ -1,0 +1,48 @@
+# Le fichier Service de la partie Frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: exam-frontend
+  namespace: exam
+spec:
+  selector: 
+    app: exam-frontend
+    tier: frontend
+  ports:
+    - protocol: "TCP"
+      port: 80
+      targetPort: 80
+  type: NodePort
+---
+# Le fichier Deployment de la partie frontend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exam-frontend
+  namespace: exam
+  labels: 
+    app: exam-frontend
+    tier: frontend
+spec:
+  replicas: 2  
+  selector:
+    matchLabels: 
+      app: exam-frontend
+      tier: frontend
+  template:
+    metadata:
+      labels: 
+        app: exam-frontend
+        tier: frontend  
+    spec:                 
+      containers: 
+      - name: exam-frontend
+        image: soukai123/exam-frontend 
+        env: 
+          -  name: SERVER_URI
+             valueFrom:
+               configMapKeyRef:
+                 name: backend-conf 
+                 key: server-uri
+        ports:
+        - containerPort: 80

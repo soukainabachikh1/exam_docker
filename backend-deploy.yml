@@ -1,0 +1,83 @@
+# Le fichier Service pour le Backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend  
+  namespace: exam
+spec:
+  selector: 
+    app: backend
+    tier: backend
+  ports:
+  - protocol: "TCP"
+    port: 5000
+    targetPort: 5000
+  type: NodePort
+---
+# Le fichier Deployment pour le Backend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: exam
+  labels: 
+    app: backend
+    tier: backend
+spec:
+  replicas: 2    
+  selector:
+    matchLabels: 
+      app: backend
+      tier: backend
+  template:
+    metadata:
+      labels: 
+        app: backend
+        tier: backend  
+    spec:                 
+      containers: 
+      - name: backend 
+        image: soukai123/exam-backend:v1   
+        env:   
+          - name: MONGO_HOST   
+            valueFrom: 
+              configMapKeyRef:
+                name: mongo-conf  
+                key: host
+          - name: MONGO_NAME 
+            valueFrom:
+              configMapKeyRef:
+                name: mongo-conf 
+                key: name
+          - name: MONGO_USERNAME 
+            valueFrom:
+              secretKeyRef:
+                name: mongo-cred 
+                key: username
+          - name: MONGO_PASSWORD 
+            valueFrom:
+              secretKeyRef:
+                name: mongo-cred
+                key: password     
+        ports:
+        - containerPort: 5000
+        # livenessProbe:
+        #   httpGet:
+        #     port: 5000
+        #     path: /health
+        #   initialDelaySeconds: 40
+        #   timeoutSeconds: 50
+        # readinessProbe:
+        #   httpGet:
+        #     port: 5000
+        #     path: /ready
+        #   initialDelaySeconds: 20
+        #   timeoutSeconds: 50
+        # startupProbe:
+        #   httpGet:
+        #     path: /startup
+        #     port: 5000
+        #   initialDelaySeconds: 40
+        #   timeoutSeconds: 50
+
+          

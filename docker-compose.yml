@@ -1,0 +1,26 @@
+version: "3"
+services:
+  
+  frontend:
+   image: soukai123/exam-frontend
+   ports:
+    -  80:80
+   container_name: frontend
+
+  backend:
+   image: soukai123/exam-backend:v1
+   ports:
+     - 5000:5000
+   container_name: backend
+
+  db:
+    image: mongo
+    ports:
+      - 27017:27017
+    container_name: mongodb-service
+    volumes:
+      - mongo-volume:/db
+
+volumes:
+  mongo-volume:
+    driver: local
