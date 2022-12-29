@@ -1,0 +1,40 @@
+version: "3"
+services:
+  
+  frontend:
+   image: localhost:8000/frontend
+   ports:
+    -  3000:3000
+   container_name: frontend
+   networks:
+    -  docker-net
+   depends_on:
+    - backend
+
+  backend:
+   image: localhost:8000/backend
+   ports:
+     - 5000:5000
+   container_name: backend
+   networks:
+     - docker-net
+   depends_on:
+    - db
+
+  db:
+    image: mongo
+    ports:
+      - 27017:27017
+    container_name: mongodb-service
+    networks:
+      - docker-net
+    volumes:
+      - mongo-vol:/mongo-db
+
+networks:
+  docker-net:
+    driver: bridge
+
+volumes:
+  mongo-vol:
+    driver: local
